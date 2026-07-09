@@ -19,4 +19,8 @@ public class AirQualityService {
     public List<AirQualityRecord> getLatestRecords() throws SQLException {
         return repository.findLatestRecords();
     }
+
+    public List<AirQualityRecord> getRecordsBetweenDates(String start, String end) throws SQLException {
+        return repository.findRecordsBetweenDates(start, end);
+    }
 }

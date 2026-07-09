@@ -10,6 +10,39 @@ import java.util.List;
 @Repository
 public class AirQualityRepository {
 
+    public List<AirQualityRecord> findRecordsBetweenDates(String start, String end) throws SQLException {
+    List<AirQualityRecord> records = new ArrayList<>();
+
+    String sql = """
+            SELECT id, timestamp, pm10, pm25, temperature, pressure
+            FROM air_quality
+            WHERE date(timestamp) BETWEEN date(?) AND date(?)
+            ORDER BY timestamp ASC
+            """;
+
+    try (Connection conn = DriverManager.getConnection(DB_URL);
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setString(1, start);
+        stmt.setString(2, end);
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                records.add(new AirQualityRecord(
+                        rs.getInt("id"),
+                        rs.getString("timestamp"),
+                        getNullableDouble(rs, "pm10"),
+                        getNullableDouble(rs, "pm25"),
+                        getNullableDouble(rs, "temperature"),
+                        getNullableDouble(rs, "pressure")
+                ));
+            }
+        }
+    }
+
+    return records;
+}
+
     private static final String DB_URL = "jdbc:sqlite:airwatch.db";
 
     public List<AirQualityRecord> findLatestRecords() throws SQLException {
