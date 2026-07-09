@@ -10,8 +10,14 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+
+
 @Service
 public class CsvImportService implements CommandLineRunner {
+
+    private int importedRows = 0;
+    private int skippedRows = 0;
+    private int cleanedNegativeValues = 0;
 
     private static final String DB_URL = "jdbc:sqlite:airwatch.db";
     private static final String DATA_FOLDER = "data";
@@ -23,6 +29,9 @@ public class CsvImportService implements CommandLineRunner {
         try {
             createTable();
             importAllCsvFiles();
+            System.out.println("Imported rows: " + importedRows);
+            System.out.println("Skipped rows: " + skippedRows);
+            System.out.println("Negative values cleaned: " + cleanedNegativeValues);
             System.out.println("CSV import completed successfully.");
         } catch (Exception e) {
             System.out.println("CSV import failed: " + e.getMessage());
@@ -88,6 +97,7 @@ public class CsvImportService implements CommandLineRunner {
                 String[] parts = line.split(",");
 
                 if (parts.length < 5) {
+                    skippedRows++;
                     continue;
                 }
 
@@ -105,6 +115,7 @@ public class CsvImportService implements CommandLineRunner {
                 setNullableDouble(pstmt, 5, pressure);
 
                 pstmt.executeUpdate();
+                importedRows++;
             }
         }
     }
@@ -114,6 +125,7 @@ public class CsvImportService implements CommandLineRunner {
             double number = Double.parseDouble(value.trim());
 
             if (number < 0) {
+                cleanedNegativeValues++;
                 return null;
             }
 

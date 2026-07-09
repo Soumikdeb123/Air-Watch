@@ -9,3 +9,5 @@ target/
 
 # Logs
 *.log
+
+airwatch.db-journal
