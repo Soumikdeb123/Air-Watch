@@ -19,6 +19,41 @@
 
         <button onclick="loadAirQualityData()">Check air quality</button>
     </div>
+    <div id="messageBox" class="condition-card">
+    <div>
+        <p class="condition-label">Air quality summary</p>
+        <h2 id="conditionTitle">Select a date range</h2>
+        <p id="conditionMessage">
+            Choose dates to view the available Adelaide CBD EPA readings.
+        </p>
+    </div>
+</div>
+
+<div class="statistics-grid">
+    <div class="stat-card">
+        <span>Average PM10</span>
+        <strong id="averagePm10">--</strong>
+        <small>µg/m³</small>
+    </div>
+
+    <div class="stat-card">
+        <span>Average PM2.5</span>
+        <strong id="averagePm25">--</strong>
+        <small>µg/m³</small>
+    </div>
+
+    <div class="stat-card">
+        <span>Highest PM10</span>
+        <strong id="highestPm10">--</strong>
+        <small>µg/m³</small>
+    </div>
+
+    <div class="stat-card">
+        <span>Readings shown</span>
+        <strong id="readingCount">--</strong>
+        <small>hourly records</small>
+    </div>
+</div>
 
     <div class="card">
         <h2>Recent PM10 and PM2.5 readings</h2>
@@ -28,6 +63,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="/js/script.js"></script>
+
+<div class="limitations">
+    <strong>Data limitation:</strong>
+    This prototype displays validated historical EPA data that is published
+    monthly. It is not a real-time warning or medical advice service.
+</div>
 
 </body>
 </html>
