@@ -189,3 +189,22 @@ button {
         width: auto;
     }
 }
+.primary-btn {
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.primary-btn:hover {
+    background: #15803d;
+}
+
+.primary-btn:active {
+    transform: scale(0.98);
+}
