@@ -19,13 +19,21 @@
 
         <button onclick="loadAirQualityData()">Check air quality</button>
     </div>
-    <div id="messageBox" class="condition-card">
-    <div>
-        <p class="condition-label">Air quality summary</p>
-        <h2 id="conditionTitle">Select a date range</h2>
-        <p id="conditionMessage">
-            Choose dates to view the available Adelaide CBD EPA readings.
-        </p>
+<div id="messageBox" class="condition-card">
+    <div class="condition-content">
+        <div>
+            <p class="condition-label">Air quality summary</p>
+            <h2 id="conditionTitle">Select a date range</h2>
+            <p id="conditionMessage">
+                Choose dates to view the available Adelaide CBD EPA readings.
+            </p>
+        </div>
+
+        <div id="trendBox" class="trend-box">
+            <span class="trend-label">Short-term trend</span>
+            <strong id="trendTitle">--</strong>
+            <small id="trendMessage">Waiting for data</small>
+        </div>
     </div>
 </div>
 

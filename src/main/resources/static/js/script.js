@@ -57,7 +57,6 @@ async function loadAirQualityData() {
     });
 }
 
-loadAirQualityData();
 function updateSummary(data) {
     const messageBox = document.getElementById("messageBox");
     const conditionTitle = document.getElementById("conditionTitle");
@@ -72,6 +71,7 @@ function updateSummary(data) {
         .filter(value => value !== null && Number.isFinite(value));
 
     document.getElementById("readingCount").textContent = data.length;
+    updateTrend(data);
 
     if (validPm10.length === 0 && validPm25.length === 0) {
         document.getElementById("averagePm10").textContent = "--";
@@ -131,6 +131,86 @@ function updateSummary(data) {
         conditionMessage.textContent =
             "At least one average particle level exceeded the referenced Australian standard for the selected period.";
     }
+}
+function updateTrend(data) {
+    const trendBox = document.getElementById("trendBox");
+    const trendTitle = document.getElementById("trendTitle");
+    const trendMessage = document.getElementById("trendMessage");
+
+    const validRecords = data.filter(record =>
+        (record.pm10 !== null && Number.isFinite(record.pm10)) ||
+        (record.pm25 !== null && Number.isFinite(record.pm25))
+    );
+
+    trendBox.className = "trend-box";
+
+    if (validRecords.length < 6) {
+        trendTitle.textContent = "Not enough data";
+        trendMessage.textContent = "More readings are needed";
+        return;
+    }
+
+    const midpoint = Math.floor(validRecords.length / 2);
+
+    const earlierRecords = validRecords.slice(0, midpoint);
+    const recentRecords = validRecords.slice(midpoint);
+
+    const earlierScore = calculatePollutionScore(earlierRecords);
+    const recentScore = calculatePollutionScore(recentRecords);
+
+    if (
+    earlierScore === null ||
+    recentScore === null ||
+    earlierScore === 0
+) {
+        trendTitle.textContent = "Unavailable";
+        trendMessage.textContent = "Unable to calculate trend";
+        return;
+    }
+
+    const percentageChange =
+        ((recentScore - earlierScore) / earlierScore) * 100;
+
+    const stableThreshold = 5;
+
+    if (percentageChange < -stableThreshold) {
+        trendBox.classList.add("improving");
+        trendTitle.textContent = "↓ Improving";
+        trendMessage.textContent =
+            `${Math.abs(percentageChange).toFixed(1)}% lower in the recent half`;
+    } else if (percentageChange > stableThreshold) {
+        trendBox.classList.add("worsening");
+        trendTitle.textContent = "↑ Worsening";
+        trendMessage.textContent =
+            `${percentageChange.toFixed(1)}% higher in the recent half`;
+    } else {
+        trendBox.classList.add("stable");
+        trendTitle.textContent = "→ Stable";
+        trendMessage.textContent =
+            `${Math.abs(percentageChange).toFixed(1)}% change`;
+    }
+}
+
+function calculatePollutionScore(records) {
+    const pm10Values = records
+        .map(record => record.pm10)
+        .filter(value => value !== null && Number.isFinite(value));
+
+    const pm25Values = records
+        .map(record => record.pm25)
+        .filter(value => value !== null && Number.isFinite(value));
+
+    if (pm10Values.length === 0 && pm25Values.length === 0) {
+        return null;
+    }
+
+    const averagePm10 = calculateAverage(pm10Values);
+    const averagePm25 = calculateAverage(pm25Values);
+
+    const pm10Ratio = averagePm10 === null ? 0 : averagePm10 / 50;
+    const pm25Ratio = averagePm25 === null ? 0 : averagePm25 / 25;
+
+    return Math.max(pm10Ratio, pm25Ratio);
 }
 
 function calculateAverage(values) {
