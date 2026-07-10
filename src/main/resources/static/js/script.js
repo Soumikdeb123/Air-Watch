@@ -115,22 +115,22 @@ function updateSummary(data) {
 
     messageBox.className = "condition-card";
 
-    if (worstRatio <= 0.5) {
-        messageBox.classList.add("good");
-        conditionTitle.textContent = "Good";
-        conditionMessage.textContent =
-            "Average particle levels for the selected period were well below the referenced Australian standards.";
-    } else if (worstRatio <= 1) {
-        messageBox.classList.add("moderate");
-        conditionTitle.textContent = "Moderate";
-        conditionMessage.textContent =
-            "Average particle levels were below the referenced standards, but one or more pollutants were elevated.";
-    } else {
-        messageBox.classList.add("poor");
-        conditionTitle.textContent = "Poor";
-        conditionMessage.textContent =
-            "At least one average particle level exceeded the referenced Australian standard for the selected period.";
-    }
+if (worstRatio <= 0.5) {
+    messageBox.classList.add("good");
+    conditionTitle.textContent = "Good Air Quality";
+    conditionMessage.textContent =
+        "Average PM10 and PM2.5 values remained well below the Australian National Environment Protection standards during the selected period.";
+} else if (worstRatio <= 1) {
+    messageBox.classList.add("moderate");
+    conditionTitle.textContent = "Moderate Air Quality";
+    conditionMessage.textContent =
+        "Average particle levels remained below the referenced Australian standards, but one or more pollutants were elevated during the selected period.";
+} else {
+    messageBox.classList.add("poor");
+    conditionTitle.textContent = "Poor Air Quality";
+    conditionMessage.textContent =
+        "At least one average particle level exceeded the referenced Australian standard during the selected period.";
+}
 }
 function updateTrend(data) {
     const trendBox = document.getElementById("trendBox");

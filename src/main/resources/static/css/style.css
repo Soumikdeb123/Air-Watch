@@ -50,12 +50,22 @@ button {
 
 .condition-card {
     background: white;
-    padding: 24px;
+    padding: 30px;
     border-left: 8px solid #6b7280;
     border-radius: 14px;
     margin-bottom: 24px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
+.condition-card h2 {
+    font-size: 28px;
+    margin: 10px 0 12px;
+}
+
+.condition-card p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
 
 .condition-card.good {
     border-left-color: #16803c;
@@ -207,4 +217,16 @@ button {
 
 .primary-btn:active {
     transform: scale(0.98);
+}
+.page-title{
+    font-size:42px;
+    font-weight:700;
+    margin-bottom:6px;
+    color:#1f2937;
+}
+
+.subtitle{
+    font-size:18px;
+    color:#6b7280;
+    margin-bottom:35px;
 }
