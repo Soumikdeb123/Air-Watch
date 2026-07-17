@@ -21,7 +21,11 @@
         <label>End date</label>
         <input type="date" id="endDate" value="2026-05-31">
 
-        <button id="loadButton" class="primary-btn">
+<button
+    type="button"
+    id="loadButton"
+    class="primary-btn"
+    onclick="loadAirQualityData()">
     Check Air Quality
 </button>
     </div>
@@ -73,16 +77,16 @@
         <h2>Recent PM10 and PM2.5 readings</h2>
         <canvas id="airChart"></canvas>
     </div>
+
+    <div class="limitations">
+        <strong>Data limitation:</strong>
+        This prototype displays validated historical EPA data that is published
+        monthly. It is not a real-time warning or medical advice service.
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="/js/script.js"></script>
-
-<div class="limitations">
-    <strong>Data limitation:</strong>
-    This prototype displays validated historical EPA data that is published
-    monthly. It is not a real-time warning or medical advice service.
-</div>
 
 </body>
 </html>

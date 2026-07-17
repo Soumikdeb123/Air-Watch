@@ -4,57 +4,89 @@ async function loadAirQualityData() {
     const start = document.getElementById("startDate").value;
     const end = document.getElementById("endDate").value;
 
-    const response = await fetch(`/api/airquality?start=${start}&end=${end}`);
-    const data = await response.json();
-    updateSummary(data);
-
-    const labels = data.map(record => record.timestamp);
-    const pm10Values = data.map(record => record.pm10);
-    const pm25Values = data.map(record => record.pm25);
-
-    const ctx = document.getElementById("airChart");
-
-    if (airChart) {
-        airChart.destroy();
+    if (!start || !end) {
+        alert("Please select both a start date and an end date.");
+        return;
     }
 
-    airChart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: "PM10",
-                    data: pm10Values,
-                    borderWidth: 2,
-                    tension: 0.2
-                },
-                {
-                    label: "PM2.5",
-                    data: pm25Values,
-                    borderWidth: 2,
-                    tension: 0.2
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    ticks: {
-                        maxTicksLimit: 10
+    if (start > end) {
+        alert("Start date must be before the end date.");
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `/api/airquality?start=${start}&end=${end}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Unable to load air quality data.");
+        }
+
+        const data = await response.json();
+
+        updateSummary(data);
+
+        if (data.length === 0) {
+            if (airChart) {
+                airChart.destroy();
+                airChart = null;
+            }
+
+            return;
+        }
+
+        const labels = data.map(record => record.timestamp);
+        const pm10Values = data.map(record => record.pm10);
+        const pm25Values = data.map(record => record.pm25);
+
+        const ctx = document.getElementById("airChart");
+
+        if (airChart) {
+            airChart.destroy();
+        }
+
+        airChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "PM10",
+                        data: pm10Values,
+                        borderWidth: 2,
+                        tension: 0.2
+                    },
+                    {
+                        label: "PM2.5",
+                        data: pm25Values,
+                        borderWidth: 2,
+                        tension: 0.2
                     }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: "µg/m³"
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        ticks: {
+                            maxTicksLimit: 10
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "µg/m³"
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    } catch (error) {
+        console.error(error);
+        alert("Something went wrong while loading the data.");
+    }
 }
 
 function updateSummary(data) {
@@ -71,6 +103,7 @@ function updateSummary(data) {
         .filter(value => value !== null && Number.isFinite(value));
 
     document.getElementById("readingCount").textContent = data.length;
+
     updateTrend(data);
 
     if (validPm10.length === 0 && validPm25.length === 0) {
@@ -99,39 +132,30 @@ function updateSummary(data) {
     document.getElementById("highestPm10").textContent =
         formatValue(highestPm10);
 
-    /*
-     * Prototype interpretation based on Australian 24-hour standards:
-     * PM10: 50 µg/m³
-     * PM2.5: 25 µg/m³
-     *
-     * Good: both averages are at or below 50% of their standards.
-     * Moderate: both averages remain at or below their standards.
-     * Poor: either average exceeds its standard.
-     */
-
     const pm10Ratio = averagePm10 === null ? 0 : averagePm10 / 50;
     const pm25Ratio = averagePm25 === null ? 0 : averagePm25 / 25;
     const worstRatio = Math.max(pm10Ratio, pm25Ratio);
 
     messageBox.className = "condition-card";
 
-if (worstRatio <= 0.5) {
-    messageBox.classList.add("good");
-    conditionTitle.textContent = "Good Air Quality";
-    conditionMessage.textContent =
-        "Average PM10 and PM2.5 values remained well below the Australian National Environment Protection standards during the selected period.";
-} else if (worstRatio <= 1) {
-    messageBox.classList.add("moderate");
-    conditionTitle.textContent = "Moderate Air Quality";
-    conditionMessage.textContent =
-        "Average particle levels remained below the referenced Australian standards, but one or more pollutants were elevated during the selected period.";
-} else {
-    messageBox.classList.add("poor");
-    conditionTitle.textContent = "Poor Air Quality";
-    conditionMessage.textContent =
-        "At least one average particle level exceeded the referenced Australian standard during the selected period.";
+    if (worstRatio <= 0.5) {
+        messageBox.classList.add("good");
+        conditionTitle.textContent = "Good Air Quality";
+        conditionMessage.textContent =
+            "Average PM10 and PM2.5 values remained well below the Australian National Environment Protection standards during the selected period.";
+    } else if (worstRatio <= 1) {
+        messageBox.classList.add("moderate");
+        conditionTitle.textContent = "Moderate Air Quality";
+        conditionMessage.textContent =
+            "Average particle levels remained below the referenced Australian standards, but one or more pollutants were elevated during the selected period.";
+    } else {
+        messageBox.classList.add("poor");
+        conditionTitle.textContent = "Poor Air Quality";
+        conditionMessage.textContent =
+            "At least one average particle level exceeded the referenced Australian standard during the selected period.";
+    }
 }
-}
+
 function updateTrend(data) {
     const trendBox = document.getElementById("trendBox");
     const trendTitle = document.getElementById("trendTitle");
@@ -159,10 +183,10 @@ function updateTrend(data) {
     const recentScore = calculatePollutionScore(recentRecords);
 
     if (
-    earlierScore === null ||
-    recentScore === null ||
-    earlierScore === 0
-) {
+        earlierScore === null ||
+        recentScore === null ||
+        earlierScore === 0
+    ) {
         trendTitle.textContent = "Unavailable";
         trendMessage.textContent = "Unable to calculate trend";
         return;
@@ -225,4 +249,5 @@ function calculateAverage(values) {
 function formatValue(value) {
     return value === null ? "--" : value.toFixed(1);
 }
+
 loadAirQualityData();
