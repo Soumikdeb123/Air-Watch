@@ -231,3 +231,69 @@ button {
     color:#6b7280;
     margin-bottom:35px;
 }
+
+.recommendation-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.recommendation-card.good {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+
+.recommendation-card.moderate {
+    background: #fffbeb;
+    border-color: #fcd34d;
+}
+
+.recommendation-card.poor {
+    background: #fef2f2;
+    border-color: #fca5a5;
+}
+
+.recommendation-card.no-data {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.recommendation-icon {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.recommendation-label {
+    margin: 0 0 5px;
+    color: #6b7280;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.recommendation-card h3 {
+    margin: 0 0 8px;
+    font-size: 20px;
+}
+
+.recommendation-card p {
+    margin: 0 0 8px;
+    line-height: 1.5;
+}
+
+.recommendation-card small {
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+@media (max-width: 600px) {
+    .recommendation-card {
+        padding: 18px;
+    }
+}

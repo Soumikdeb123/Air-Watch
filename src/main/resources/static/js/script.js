@@ -115,6 +115,8 @@ function updateSummary(data) {
         conditionTitle.textContent = "No usable readings";
         conditionMessage.textContent =
             "No valid PM10 or PM2.5 readings were available for this date range.";
+
+        updateRecommendation("no-data");
         return;
     }
 
@@ -143,16 +145,62 @@ function updateSummary(data) {
         conditionTitle.textContent = "Good Air Quality";
         conditionMessage.textContent =
             "Average PM10 and PM2.5 values remained well below the Australian National Environment Protection standards during the selected period.";
+
+        updateRecommendation("good");
+
     } else if (worstRatio <= 1) {
         messageBox.classList.add("moderate");
         conditionTitle.textContent = "Moderate Air Quality";
         conditionMessage.textContent =
             "Average particle levels remained below the referenced Australian standards, but one or more pollutants were elevated during the selected period.";
+
+        updateRecommendation("moderate");
+
     } else {
         messageBox.classList.add("poor");
         conditionTitle.textContent = "Poor Air Quality";
         conditionMessage.textContent =
             "At least one average particle level exceeded the referenced Australian standard during the selected period.";
+
+        updateRecommendation("poor");
+    }
+}
+
+function updateRecommendation(condition) {
+    const card = document.getElementById("recommendationCard");
+    const icon = document.getElementById("recommendationIcon");
+    const title = document.getElementById("recommendationTitle");
+    const message = document.getElementById("recommendationMessage");
+
+    card.className = "recommendation-card";
+
+    if (condition === "good") {
+        card.classList.add("good");
+        icon.textContent = "🟢";
+        title.textContent = "Usual outdoor activities may continue";
+        message.textContent =
+            "Particle averages for the selected period were comparatively low. Continue to monitor current official advice if you have asthma or another respiratory condition.";
+
+    } else if (condition === "moderate") {
+        card.classList.add("moderate");
+        icon.textContent = "🟡";
+        title.textContent = "Be aware of elevated particle levels";
+        message.textContent =
+            "One or more particle averages were elevated. People who are sensitive to air pollution may wish to reduce prolonged or strenuous outdoor activity.";
+
+    } else if (condition === "poor") {
+        card.classList.add("poor");
+        icon.textContent = "🔴";
+        title.textContent = "Consider reducing outdoor exposure";
+        message.textContent =
+            "At least one particle average exceeded the referenced standard. Sensitive individuals should consider limiting prolonged outdoor activity and checking current official health advice.";
+
+    } else {
+        card.classList.add("no-data");
+        icon.textContent = "ℹ️";
+        title.textContent = "No guidance available";
+        message.textContent =
+            "No usable particle readings were available for the selected date range.";
     }
 }
 
@@ -202,11 +250,13 @@ function updateTrend(data) {
         trendTitle.textContent = "↓ Improving";
         trendMessage.textContent =
             `${Math.abs(percentageChange).toFixed(1)}% lower in the recent half`;
+
     } else if (percentageChange > stableThreshold) {
         trendBox.classList.add("worsening");
         trendTitle.textContent = "↑ Worsening";
         trendMessage.textContent =
             `${percentageChange.toFixed(1)}% higher in the recent half`;
+
     } else {
         trendBox.classList.add("stable");
         trendTitle.textContent = "→ Stable";
