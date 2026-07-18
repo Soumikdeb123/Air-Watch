@@ -299,5 +299,26 @@ function calculateAverage(values) {
 function formatValue(value) {
     return value === null ? "--" : value.toFixed(1);
 }
+function downloadCsv() {
+    const start = document.getElementById("startDate").value;
+    const end = document.getElementById("endDate").value;
+
+    if (!start || !end) {
+        alert("Please select both a start date and an end date.");
+        return;
+    }
+
+    if (start > end) {
+        alert("Start date must be before the end date.");
+        return;
+    }
+
+    const downloadUrl =
+        `/api/airquality/export?start=${encodeURIComponent(start)}` +
+        `&end=${encodeURIComponent(end)}`;
+
+    window.location.href = downloadUrl;
+}
+
 
 loadAirQualityData();
