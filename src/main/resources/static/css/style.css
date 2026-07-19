@@ -349,3 +349,11 @@ button {
 .chart-card {
     padding-bottom: 30px;
 }
+
+.chart-description{
+    margin-top:8px;
+    margin-bottom:24px;
+    color:#6b7280;
+    line-height:1.6;
+    font-size:15px;
+}
