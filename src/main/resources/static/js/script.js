@@ -67,6 +67,7 @@ async function loadAirQualityData() {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         ticks: {

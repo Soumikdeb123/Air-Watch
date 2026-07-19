@@ -75,35 +75,38 @@
 </div>
 
 <div class="statistics-grid">
-    <div class="stat-card">
+    <div class="stat-card pm10-card">
         <span>Average PM10</span>
         <strong id="averagePm10">--</strong>
         <small>µg/m³</small>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card pm25-card">
         <span>Average PM2.5</span>
         <strong id="averagePm25">--</strong>
         <small>µg/m³</small>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card highest-card">
         <span>Highest PM10</span>
         <strong id="highestPm10">--</strong>
         <small>µg/m³</small>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card readings-card">
         <span>Readings shown</span>
         <strong id="readingCount">--</strong>
         <small>hourly records</small>
     </div>
 </div>
 
-    <div class="card">
-        <h2>Air Quality Readings</h2>
+ <div class="card chart-card">
+    <h2>Air quality readings</h2>
+
+    <div class="chart-container">
         <canvas id="airChart"></canvas>
     </div>
+</div>
 
     <div class="limitations">
         <strong>Data limitation:</strong>
