@@ -68,6 +68,23 @@ async function loadAirQualityData() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: {
+    tooltip: {
+        callbacks: {
+            title: function(context) {
+                return "Date: " + context[0].label;
+            },
+            label: function(context) {
+                return (
+                    context.dataset.label +
+                    ": " +
+                    context.parsed.y.toFixed(1) +
+                    " µg/m³"
+                );
+            }
+        }
+    }
+},
                 scales: {
                     x: {
                         ticks: {
@@ -94,6 +111,8 @@ function updateSummary(data) {
     const messageBox = document.getElementById("messageBox");
     const conditionTitle = document.getElementById("conditionTitle");
     const conditionMessage = document.getElementById("conditionMessage");
+    const conditionDot =
+    document.getElementById("conditionDot");
 
     const validPm10 = data
         .map(record => record.pm10)
@@ -111,6 +130,7 @@ function updateSummary(data) {
         document.getElementById("averagePm10").textContent = "--";
         document.getElementById("averagePm25").textContent = "--";
         document.getElementById("highestPm10").textContent = "--";
+        conditionDot.style.background = "#9ca3af";
 
         messageBox.className = "condition-card";
         conditionTitle.textContent = "No usable readings";
@@ -144,6 +164,7 @@ function updateSummary(data) {
     if (worstRatio <= 0.5) {
         messageBox.classList.add("good");
         conditionTitle.textContent = "Good Air Quality";
+        conditionDot.style.background="#22c55e";
         conditionMessage.textContent =
             "Average PM10 and PM2.5 values remained well below the Australian National Environment Protection standards during the selected period.";
 
@@ -152,6 +173,7 @@ function updateSummary(data) {
     } else if (worstRatio <= 1) {
         messageBox.classList.add("moderate");
         conditionTitle.textContent = "Moderate Air Quality";
+        conditionDot.style.background="#f59e0b";
         conditionMessage.textContent =
             "Average particle levels remained below the referenced Australian standards, but one or more pollutants were elevated during the selected period.";
 
@@ -160,6 +182,7 @@ function updateSummary(data) {
     } else {
         messageBox.classList.add("poor");
         conditionTitle.textContent = "Poor Air Quality";
+        conditionDot.style.background="#ef4444";
         conditionMessage.textContent =
             "At least one average particle level exceeded the referenced Australian standard during the selected period.";
 

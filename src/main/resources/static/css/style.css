@@ -357,3 +357,17 @@ button {
     line-height:1.6;
     font-size:15px;
 }
+
+.condition-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.condition-dot{
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#9ca3af;
+    flex-shrink:0;
+}
